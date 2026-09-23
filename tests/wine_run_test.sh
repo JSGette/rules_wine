@@ -11,15 +11,17 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
 # --- end runfiles.bash initialization v3 ---
 
 wine_run="$(rlocation "$WINE_RUN")"
+# Any Windows executable will do; Wine ships one in wine_run's runfiles.
+cmd="$(rlocation wine_linux_x86_64/lib/wine/x86_64-windows/cmd.exe)"
 
-out="$("$wine_run" cmd /c echo hello-from-wine)"
+out="$("$wine_run" "$cmd" /c echo hello-from-wine)"
 if [[ "$out" != *hello-from-wine* ]]; then
     echo "unexpected output: $out" >&2
     exit 1
 fi
 
 # The Windows exit code must reach the caller.
-if "$wine_run" cmd /c exit 3; then
+if "$wine_run" "$cmd" /c exit 3; then
     echo "expected a non-zero exit code" >&2
     exit 1
 else

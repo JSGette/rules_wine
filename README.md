@@ -29,8 +29,10 @@ bazel_dep(name = "rules_wine", version = "0.0.0")
 
 ## Usage
 
-`wine_run <windows-exe> [args...]` runs the executable in a throwaway Wine
-prefix and returns its exit code. As a `run_binary` tool it resolves for the
+`wine_run <path/to/windows-exe> [args...]` runs the executable in a throwaway
+Wine prefix, in the caller's working directory, and returns its exit code. The
+executable must be a path, not a name looked up in Wine's `PATH`. As a
+`run_binary` tool it resolves for the
 exec platform:
 
 ```starlark

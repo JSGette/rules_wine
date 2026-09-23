@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Usage: wine_run <windows-executable> [args...]
+# Usage: wine_run <path/to/windows-executable> [args...]
 #
 # Each invocation gets a throwaway prefix, so no state leaks between runs or
 # from the user's ~/.wine.
@@ -51,4 +51,7 @@ export WINEDLLOVERRIDES="mscoree,mshtml,winemenubuilder.exe="
 export LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC
 unset DISPLAY WAYLAND_DISPLAY
 
-"${emulator[@]}" "$wine" "$@"
+# wineserver SIGKILLs a process whose Unix side outlives its Windows exit by
+# ~1s, which box64 teardown of large programs routinely does. start.exe waits
+# for the program and exits with its Windows exit code; /d . keeps the cwd.
+"${emulator[@]}" "$wine" start /wait /b /d . /unix "$@"

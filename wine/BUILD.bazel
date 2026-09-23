@@ -16,7 +16,7 @@ config_setting(
     ],
 )
 
-# Runs a Windows x86_64 executable under a pinned Wine: `wine_run <exe> [args...]`.
+# Runs a Windows x86_64 executable under a pinned Wine: `wine_run <path/to/exe> [args...]`.
 # Usable directly, or as the `tool` of a run_binary / genrule, in which case it
 # resolves for the exec platform.
 sh_binary(
