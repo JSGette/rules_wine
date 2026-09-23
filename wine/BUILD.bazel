@@ -1,0 +1,27 @@
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+)
+
+# Runs a Windows executable under a pinned Wine: `wine_run <exe> [args...]`.
+# Usable directly, or as the `tool` of a run_binary / genrule, in which case it
+# resolves for the exec platform.
+sh_binary(
+    name = "wine_run",
+    srcs = ["wine_run.sh"],
+    data = select({
+        ":linux_x86_64": ["@wine_linux_x86_64//:runtime"],
+        "//conditions:default": [],
+    }),
+    target_compatible_with = select({
+        ":linux_x86_64": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["//visibility:public"],
+    deps = ["@rules_shell//shell/runfiles"],
+)

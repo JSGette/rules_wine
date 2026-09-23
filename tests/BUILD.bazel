@@ -1,0 +1,9 @@
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+sh_test(
+    name = "wine_run_test",
+    srcs = ["wine_run_test.sh"],
+    data = ["//wine:wine_run"],
+    env = {"WINE_RUN": "$(rlocationpath //wine:wine_run)"},
+    deps = ["@rules_shell//shell/runfiles"],
+)
