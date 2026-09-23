@@ -1,4 +1,5 @@
 exports_files([
     "box64.BUILD.bazel",
+    "libgcc.BUILD.bazel",
     "prebuilt.BUILD.bazel",
 ])

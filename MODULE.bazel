@@ -30,3 +30,14 @@ deb_archive(
         "https://snapshot.debian.org/archive/debian/20260613T203105Z/pool/main/b/box64/box64_0.4.3-3%2Bdfsg-1_arm64.deb",
     ],
 )
+
+# Wine's ntdll.so links libgcc_s, which box64 has to run as emulated x86_64 code.
+deb_archive(
+    name = "libgcc_s_linux_x86_64",
+    build_file = "//wine/private:libgcc.BUILD.bazel",
+    sha256 = "3c71917b490d1a17aed43196a2787a256ecf060526cdb20216a74bedc061b150",
+    urls = [
+        "https://deb.debian.org/debian/pool/main/g/gcc-14/libgcc-s1_14.2.0-19_amd64.deb",
+        "https://snapshot.debian.org/archive/debian/20250315T204837Z/pool/main/g/gcc-14/libgcc-s1_14.2.0-19_amd64.deb",
+    ],
+)

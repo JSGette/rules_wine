@@ -28,7 +28,9 @@ if [[ "$(uname -m)" == aarch64 ]]; then
     emulator=("$(resolve box64_linux_aarch64/usr/bin/box64)")
     # Use the pinned rcfile instead of the host's /etc/box64.box64rc.
     BOX64_RCFILE="$(resolve box64_linux_aarch64/etc/box64.box64rc)"
-    export BOX64_RCFILE BOX64_LOG=0 BOX64_NOBANNER=1
+    # Only the pinned x86_64 libraries, never the host's /usr/lib/x86_64-linux-gnu.
+    BOX64_LD_LIBRARY_PATH="$(dirname "$(resolve libgcc_s_linux_x86_64/usr/lib/x86_64-linux-gnu/libgcc_s.so.1)")"
+    export BOX64_RCFILE BOX64_LD_LIBRARY_PATH BOX64_LOG=0 BOX64_NOBANNER=1
 fi
 
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/wine_run.XXXXXX")"

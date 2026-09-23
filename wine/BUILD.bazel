@@ -27,6 +27,7 @@ sh_binary(
         ":linux_aarch64": [
             "@box64_linux_aarch64//:etc/box64.box64rc",
             "@box64_linux_aarch64//:usr/bin/box64",
+            "@libgcc_s_linux_x86_64//:usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
             "@wine_linux_x86_64//:runtime",
         ],
         "//conditions:default": [],
