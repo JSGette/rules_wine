@@ -15,15 +15,19 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
   { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v3 ---
 
-wine="$(rlocation wine_linux_x86_64/bin/wine)"
-wineserver="$(rlocation wine_linux_x86_64/bin/wineserver)"
+# rlocation is relative when the tool is invoked by a relative path (as in a
+# Bazel action), and Wine changes directory before spawning wineserver/wineboot.
+resolve() { realpath "$(rlocation "$1")"; }
+
+wine="$(resolve wine_linux_x86_64/bin/wine)"
+wineserver="$(resolve wine_linux_x86_64/bin/wineserver)"
 
 emulator=()
 if [[ "$(uname -m)" == aarch64 ]]; then
     # box64 also translates the wineserver/wineboot processes Wine spawns.
-    emulator=("$(rlocation box64_linux_aarch64/usr/bin/box64)")
+    emulator=("$(resolve box64_linux_aarch64/usr/bin/box64)")
     # Use the pinned rcfile instead of the host's /etc/box64.box64rc.
-    BOX64_RCFILE="$(rlocation box64_linux_aarch64/etc/box64.box64rc)"
+    BOX64_RCFILE="$(resolve box64_linux_aarch64/etc/box64.box64rc)"
     export BOX64_RCFILE BOX64_LOG=0 BOX64_NOBANNER=1
 fi
 
