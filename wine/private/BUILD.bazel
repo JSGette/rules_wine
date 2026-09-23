@@ -1,1 +1,4 @@
-exports_files(["prebuilt.BUILD.bazel"])
+exports_files([
+    "box64.BUILD.bazel",
+    "prebuilt.BUILD.bazel",
+])

@@ -16,3 +16,17 @@ http_archive(
     strip_prefix = "wine-11.0-amd64-wow64",
     urls = ["https://github.com/Kron4ek/Wine-Builds/releases/download/11.0/wine-11.0-amd64-wow64.tar.xz"],
 )
+
+deb_archive = use_repo_rule("//wine/private:deb_archive.bzl", "deb_archive")
+
+# Needs glibc 2.39+ and a 4K-page kernel. The pool URL disappears once sid moves
+# on; the snapshot URL is permanent.
+deb_archive(
+    name = "box64_linux_aarch64",
+    build_file = "//wine/private:box64.BUILD.bazel",
+    sha256 = "136cf47a54345d180cdcdb61ac320717d50047d6c0d13ca5e3f6335cd7e1bdbf",
+    urls = [
+        "https://deb.debian.org/debian/pool/main/b/box64/box64_0.4.3-3+dfsg-1_arm64.deb",
+        "https://snapshot.debian.org/archive/debian/20260613T203105Z/pool/main/b/box64/box64_0.4.3-3%2Bdfsg-1_arm64.deb",
+    ],
+)
