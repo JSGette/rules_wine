@@ -18,9 +18,18 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
 wine="$(rlocation wine_linux_x86_64/bin/wine)"
 wineserver="$(rlocation wine_linux_x86_64/bin/wineserver)"
 
+emulator=()
+if [[ "$(uname -m)" == aarch64 ]]; then
+    # box64 also translates the wineserver/wineboot processes Wine spawns.
+    emulator=("$(rlocation box64_linux_aarch64/usr/bin/box64)")
+    # Use the pinned rcfile instead of the host's /etc/box64.box64rc.
+    BOX64_RCFILE="$(rlocation box64_linux_aarch64/etc/box64.box64rc)"
+    export BOX64_RCFILE BOX64_LOG=0 BOX64_NOBANNER=1
+fi
+
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/wine_run.XXXXXX")"
 cleanup() {
-    "$wineserver" -k -w 2>/dev/null || true
+    "${emulator[@]}" "$wineserver" -k -w 2>/dev/null || true
     rm -rf "$scratch"
 }
 trap cleanup EXIT
@@ -36,4 +45,4 @@ export WINEDLLOVERRIDES="mscoree,mshtml,winemenubuilder.exe="
 export LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC
 unset DISPLAY WAYLAND_DISPLAY
 
-"$wine" "$@"
+"${emulator[@]}" "$wine" "$@"

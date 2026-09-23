@@ -1,7 +1,7 @@
 # rules_wine
 
-Run Windows executables inside Bazel actions and tests on Linux, using a pinned
-Wine instead of whatever is installed on the host.
+Run Windows x86_64 executables inside Bazel actions and tests on Linux, using a
+pinned Wine instead of whatever is installed on the host.
 
 Typical use: a code generator that must be *executed* as a Windows binary
 (for instance because it reflects over types that only exist in a Windows
@@ -9,16 +9,17 @@ build) but whose output you want to produce or verify from Linux.
 
 ## Supported hosts
 
-| Exec platform | Wine build |
-| --- | --- |
-| Linux x86_64 | [Kron4ek Wine 11.0 amd64-wow64](https://github.com/Kron4ek/Wine-Builds/releases/tag/11.0) |
+| Exec platform | How it runs | Host requirements |
+| --- | --- | --- |
+| Linux x86_64 | [Kron4ek Wine 11.0 amd64-wow64](https://github.com/Kron4ek/Wine-Builds/releases/tag/11.0) | glibc 2.28+ |
+| Linux aarch64 | The same Wine under [box64](https://github.com/ptitSeb/box64) 0.4.3 (Debian package) | glibc 2.39+, 4K page size |
 
 On any other platform `@rules_wine//wine:wine_run` is incompatible, so targets
-using it are skipped rather than failing. The Wine archive is only downloaded
-when a compatible target is built.
+using it are skipped rather than failing. The archives are only downloaded when
+a compatible target is built.
 
-The prebuilt archive needs glibc 2.28 or newer. FreeType is optional; without
-it Wine prints a warning but console programs run fine.
+FreeType is optional; without it Wine prints a warning but console programs run
+fine.
 
 ## Setup
 
@@ -58,5 +59,5 @@ diagnostics; they are silenced by default.
 
 ## License
 
-Apache-2.0. Wine itself is LGPL-2.1-or-later; this module only downloads and
-runs it.
+Apache-2.0. Wine is LGPL-2.1-or-later and box64 is MIT; this module only
+downloads and runs them.

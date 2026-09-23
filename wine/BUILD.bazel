@@ -8,7 +8,15 @@ config_setting(
     ],
 )
 
-# Runs a Windows executable under a pinned Wine: `wine_run <exe> [args...]`.
+config_setting(
+    name = "linux_aarch64",
+    constraint_values = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+)
+
+# Runs a Windows x86_64 executable under a pinned Wine: `wine_run <exe> [args...]`.
 # Usable directly, or as the `tool` of a run_binary / genrule, in which case it
 # resolves for the exec platform.
 sh_binary(
@@ -16,10 +24,16 @@ sh_binary(
     srcs = ["wine_run.sh"],
     data = select({
         ":linux_x86_64": ["@wine_linux_x86_64//:runtime"],
+        ":linux_aarch64": [
+            "@box64_linux_aarch64//:etc/box64.box64rc",
+            "@box64_linux_aarch64//:usr/bin/box64",
+            "@wine_linux_x86_64//:runtime",
+        ],
         "//conditions:default": [],
     }),
     target_compatible_with = select({
         ":linux_x86_64": [],
+        ":linux_aarch64": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
     visibility = ["//visibility:public"],
