@@ -1,0 +1,13 @@
+{
+  "homepage": "https://github.com/hermeticbuild/rules_wine",
+  "maintainers": [
+    {
+      "github": "JSGette",
+      "github_user_id": 9263589,
+      "name": "Joseph Gette"
+    }
+  ],
+  "repository": ["github:hermeticbuild/rules_wine"],
+  "versions": [],
+  "yanked_versions": {}
+}

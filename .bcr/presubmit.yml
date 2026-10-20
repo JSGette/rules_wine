@@ -1,0 +1,20 @@
+# wine_run only supports Linux; box64 on aarch64 needs glibc 2.39+, hence 24.04.
+matrix:
+  bazel: ["8.x", "9.x"]
+tasks:
+  verify_linux_x86_64:
+    name: Verify wine_run on Linux x86_64
+    platform: ubuntu2404
+    bazel: ${{ bazel }}
+    build_targets:
+      - "@rules_wine//wine:wine_run"
+    test_targets:
+      - "@rules_wine//tests:wine_run_test"
+  verify_linux_aarch64:
+    name: Verify wine_run on Linux aarch64
+    platform: ubuntu2404_arm64
+    bazel: ${{ bazel }}
+    build_targets:
+      - "@rules_wine//wine:wine_run"
+    test_targets:
+      - "@rules_wine//tests:wine_run_test"
