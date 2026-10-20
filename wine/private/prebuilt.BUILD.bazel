@@ -13,3 +13,8 @@ filegroup(
     ),
     visibility = ["@rules_wine//wine:__pkg__"],
 )
+
+exports_files(
+    ["lib/wine/x86_64-windows/cmd.exe"],
+    visibility = ["@rules_wine//tests:__pkg__"],
+)
