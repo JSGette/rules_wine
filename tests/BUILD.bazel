@@ -1,4 +1,5 @@
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("//wine:defs.bzl", "windows_run_binary")
 
 sh_test(
     name = "wine_run_test",
@@ -6,4 +7,25 @@ sh_test(
     data = ["//wine:wine_run"],
     env = {"WINE_RUN": "$(rlocationpath //wine:wine_run)"},
     deps = ["@rules_shell//shell/runfiles"],
+)
+
+# Wine's own cmd.exe only runs under Wine, so this does not exercise the native
+# Windows toolchain.
+windows_run_binary(
+    name = "echo",
+    outs = ["echo.txt"],
+    args = [
+        "/c",
+        "echo",
+        "hello-from-wine>$(execpath echo.txt)",
+    ],
+    target_compatible_with = ["@platforms//os:linux"],
+    tool = "@wine_linux_x86_64//:lib/wine/x86_64-windows/cmd.exe",
+)
+
+sh_test(
+    name = "windows_run_binary_test",
+    srcs = ["windows_run_binary_test.sh"],
+    args = ["$(rootpath :echo)"],
+    data = [":echo"],
 )
