@@ -1,0 +1,38 @@
+load("//wine/private:toolchain.bzl", "windows_exec_toolchain")
+
+windows_exec_toolchain(name = "native")
+
+windows_exec_toolchain(
+    name = "wine",
+    launcher = "//wine:wine_run",
+)
+
+toolchain(
+    name = "native_windows_x86_64",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:windows",
+    ],
+    toolchain = ":native",
+    toolchain_type = "//wine:toolchain_type",
+)
+
+toolchain(
+    name = "wine_linux_x86_64",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":wine",
+    toolchain_type = "//wine:toolchain_type",
+)
+
+toolchain(
+    name = "wine_linux_aarch64",
+    exec_compatible_with = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":wine",
+    toolchain_type = "//wine:toolchain_type",
+)

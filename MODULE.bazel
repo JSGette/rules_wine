@@ -6,6 +6,8 @@ module(
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 
+register_toolchains("//wine/toolchains:all")
+
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # New-style WoW64 build: 64-bit prefix, no i386 host libraries required.

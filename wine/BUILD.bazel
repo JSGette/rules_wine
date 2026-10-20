@@ -1,5 +1,12 @@
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
+# Resolves for the exec platform to how a Windows x86_64 executable is run there:
+# natively on Windows, under wine_run on Linux.
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
 config_setting(
     name = "linux_x86_64",
     constraint_values = [
