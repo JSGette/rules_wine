@@ -70,12 +70,12 @@ path, not a name looked up in Wine's `PATH`.
 
 ### Generate a file with a Windows binary
 
-Cross-compile the generator for Windows and run it as a build action. As the
-`tool` of a `run_binary`, `wine_run` resolves for the exec platform:
+Cross-compile the generator for Windows and run it as a build action with
+`windows_run_binary`:
 
 ```starlark
-load("@bazel_lib//lib:run_binary.bzl", "run_binary")
 load("@rules_go//go:def.bzl", "go_cross_binary")
+load("@rules_wine//wine:defs.bzl", "windows_run_binary")
 
 go_cross_binary(
     name = "gen_windows",
@@ -83,17 +83,32 @@ go_cross_binary(
     target = ":gen",
 )
 
-run_binary(
+windows_run_binary(
     name = "schema_windows",
-    srcs = [":gen_windows"],
     outs = ["schema_windows.gen.json"],
-    args = [
-        "$(execpath :gen_windows)",
-        "-output=$(execpath schema_windows.gen.json)",
-    ],
-    tool = "@rules_wine//wine:wine_run",
+    args = ["-output=$(execpath schema_windows.gen.json)"],
+    tool = ":gen_windows",
 )
 ```
+
+How the tool runs is decided by the `@rules_wine//wine:toolchain_type`
+toolchain, which resolves for the platform the action executes on, whatever
+the target platform:
+
+| Exec platform | Toolchain |
+| --- | --- |
+| Linux x86_64, Linux aarch64 | Under `wine_run` |
+| Windows x86_64 | Natively |
+| Anything else | None, the build fails with "no matching toolchains" |
+
+So the same target works on a Windows workstation, a Linux CI runner, and a
+macOS client using Linux remote execution. To run Windows tools some other
+way, register your own `windows_exec_toolchain` from
+`@rules_wine//wine:defs.bzl` ahead of the bundled ones.
+
+`wine_run` can also be the `tool` of a plain `run_binary` or `genrule`, with
+the Windows executable as its first argument. That only works where the
+action executes on Linux.
 
 ### Keep a checked-in file up to date
 
